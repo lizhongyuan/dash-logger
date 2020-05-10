@@ -1,0 +1,23 @@
+{
+  "name": "dash-logger",
+  "version": "1.0.0",
+  "dependencies": {
+    "bluebird": "^3.7.2",
+    "bufferpack": "0.0.6",
+    "ip": "^1.1.5",
+    "koa": "^2.11.0",
+    "mkdirp": "^1.0.4",
+    "moment": "^2.24.0",
+    "process": "^0.11.10",
+    "underscore": "^1.10.2",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^4.4.2"
+  },
+  "repository": {
+    "type": "git"
+  },
+  "author": [
+    "fenixlee@163.com"
+  ],
+  "license": "MIT"
+}
