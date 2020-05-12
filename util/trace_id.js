@@ -2,17 +2,17 @@
 
 
 const BufferPack = require('bufferpack');
-const _max_seq = 4294967295;  // ffffffff对应十进制
 
 
 class TraceId {
 
-  constructor(options) {
+  constructor(option) {
 
     this.seq = 0; // count from 0
+    this.SEQ_MAX = 4294967295; // 0xFFFFFFFF对应的十进制
 
-    if (options && options.generatorMethod && typeof options.generatorMethod === 'function') {
-      this.generatorMethod = options.generatorMethod;
+    if (option && option.generatorMethod && typeof option.generatorMethod === 'function') {
+      this.generatorMethod = option.generatorMethod;
     } else {
       this.generatorMethod = this.defaultGenerator;
     }
@@ -25,29 +25,38 @@ class TraceId {
   }
 
   defaultGenerator() {
-    this.seq = this.seq % _max_seq + 1;
+    this.seq = this.seq % this.SEQ_MAX + 1;
 
-    this.countPrefix = Buffer.concat([
+    this.counterPrefix = Buffer.concat([
       BufferPack.pack('>L', [ this.seq ]),
     ], 4).toString('hex');
 
-    const traceId = this.countPrefix + generateSimpleTraceId();
+    const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-';
+    const RAND_STR_LENGTH = 8;
+
+    let randStr = '';
+    for (let i = 0; i < RAND_STR_LENGTH; i++) {
+      randStr += ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
+    }
+
+    const traceId = this.counterPrefix + randStr;
 
     return traceId;
   }
-}
 
+  /*
+  generateSimpleTraceId() {
+    const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-';
+    const ID_LENGTH = 8;
 
-function generateSimpleTraceId() {
-  const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-';
-  const ID_LENGTH = 8;
+    let traceId = '';
+    for (let i = 0; i < ID_LENGTH; i++) {
+      traceId += ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
+    }
 
-  let traceId = '';
-  for (let i = 0; i < ID_LENGTH; i++) {
-    traceId += ALPHABET.charAt(Math.floor(Math.random() * ALPHABET.length));
+    return traceId;
   }
-
-  return traceId;
+   */
 }
 
 

@@ -1,15 +1,14 @@
 'use strict';
 
 
-// const { Url } = require('../util');
 const { Net } = require('./util');
 const { BaseLogger } = require('./logger');
-const { defaultOption } = require('./option');
+// const { defaultOption } = require('./option');
+const { constant } = require('./common');
+const { DEFAULT_OPTION } = constant.LOGGER;
+const { TRACE_ID_HEADER } = constant.TRACE_ID;
 
 
-const TRACEID_HEADER = 'x-trace-id'; // http headers
-
-// function middleware(Logger, option = {}) {
 function middleware(option = {}) {
 
   async function buildKoa2LoggerHandler(ctx, next) {
@@ -23,26 +22,24 @@ function middleware(option = {}) {
 
     const uri = Net.Http.getUri(ctx.method, ctx.url);
 
-    const httpOptions = {
+    const httpOption = {
       api: uri,
       method: ctx.method
     };
 
-    if (ctx.req.headers[ TRACEID_HEADER ]) {
-      httpOptions.traceId = ctx.req.headers[ TRACEID_HEADER ];
+    // headers x-trace-id 优先级高于配置
+    if (ctx.req.headers[ TRACE_ID_HEADER ]) {
+      httpOption.traceId = ctx.req.headers[ TRACE_ID_HEADER ];
     }
 
-    // const curOptions = Object.assign(httpOptions, DefaultOption, option);
-    const curOptions = Object.assign(httpOptions, defaultOption, option);
+    const loggerOption = Object.assign(httpOption, DEFAULT_OPTION, option);
 
-    // const baseNodeLoggerInstance = new Logger(curOptions);
-    const baseNodeLoggerInstance = new BaseLogger(curOptions);
-    if (!baseNodeLoggerInstance) {
-      throw new Error('new baseNodeLoggerInstance error');
+    const loggerInstance = new BaseLogger(loggerOption);
+    if (!loggerInstance) {
+      throw new Error('new loggerInstance error');
     }
 
-    // set to ctx
-    ctx[loggerName] = baseNodeLoggerInstance;
+    ctx[ loggerName ] = loggerInstance;
 
     await next();
   }

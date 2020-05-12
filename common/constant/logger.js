@@ -28,3 +28,4 @@ const DEFAULT_OPTION = {
 
 exports.DEFAULT_OPTION = DEFAULT_OPTION;
 exports.DEPAULT_PLACE_HOLDER = '-';
+exports.TRACE_ID_HEADER = 'x-trace-id';
