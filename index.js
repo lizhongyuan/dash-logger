@@ -1,9 +1,8 @@
 'use strict';
 
 
-/*
- BaseLogger,
- getGlobalWinstonInstance,
- getMiddleware
- */
+const { BaseLogger, getGlobalWinstonInstance } = require('./logger');
 
+
+exports.BaseLogger = BaseLogger;
+exports.getGlobalWinstonInstance = getGlobalWinstonInstance;
